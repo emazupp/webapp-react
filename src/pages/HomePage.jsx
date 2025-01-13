@@ -1,9 +1,10 @@
 import { useContext } from "react";
 import { MoviesContext } from "../contexts/MoviesContext";
+import Card from "../components/Card";
 
 export default function HomePage() {
   const { movies } = useContext(MoviesContext);
-  console.log(movies);
+
   return (
     <>
       <h1>HomePage</h1>
