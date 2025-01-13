@@ -4,9 +4,14 @@ export default function Card({ movie }) {
   const navigate = useNavigate();
   return (
     <>
-      <div onClick={() => navigate(`/movies/${movie.id}`)} className="card">
-        <span>{movie.title}</span>
-        <img src={movie.image}></img>
+      <div className="col-4">
+        <div
+          onClick={() => navigate(`/movies/${movie.id}`)}
+          className="card h-100"
+        >
+          <span>{movie.title}</span>
+          <img className="h-100" src={movie.image}></img>
+        </div>
       </div>
     </>
   );

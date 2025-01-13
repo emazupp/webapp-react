@@ -8,13 +8,15 @@ export default function HomePage() {
   return (
     <>
       <h1>HomePage</h1>
-      {movies ? (
-        movies.map((movie) => {
-          return <Card key={movie.id} movie={movie} />;
-        })
-      ) : (
-        <span>Loading...</span>
-      )}
+      <div className="row g-3">
+        {movies ? (
+          movies.map((movie) => {
+            return <Card key={movie.id} movie={movie} />;
+          })
+        ) : (
+          <span>Loading...</span>
+        )}
+      </div>
     </>
   );
 }
