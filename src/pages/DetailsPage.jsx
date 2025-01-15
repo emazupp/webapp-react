@@ -2,8 +2,22 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export default function DetailsPage() {
+  const defaultFormValue = {
+    name: "",
+    vote: "",
+    text: "",
+  };
+
   const { id } = useParams();
   const [movie, setMovie] = useState([]);
+  const [formValue, setFormValue] = useState(defaultFormValue);
+
+  const handleFormValue = (e) => {
+    setFormValue({
+      ...formValue,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   async function fetchShowMovie() {
     const res = await fetch(`http://localhost:3000/movies/${id}`);
@@ -11,19 +25,30 @@ export default function DetailsPage() {
     setMovie(data);
   }
 
+  async function fetchStoreReviews(e) {
+    e.preventDefault();
+    const res = await fetch(`http://localhost:3000/movies/${id}/reviews`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formValue),
+    });
+    const data = await res.json();
+    setFormValue(defaultFormValue);
+    fetchShowMovie();
+  }
+
   useEffect(() => {
     fetchShowMovie();
   }, []);
 
-  console.log(movie);
   return (
     <>
-      <div className="row">
+      <div className="row mb-4">
         <div className="col-12">
           <h1>{movie.title}</h1>
         </div>
         <div className="col-6">
-          <img className="card-img h-500" src={movie.image} alt={movie.id} />
+          <img className="card-img" src={movie.image} alt={movie.id} />
         </div>
         <div className="col-6">
           <h4>Trama</h4>
@@ -40,20 +65,73 @@ export default function DetailsPage() {
         </div>
       </div>
 
-      <div className="row mt-4">
+      <hr />
+
+      <div className="row mt-4 mb-5">
         <div className="col-12">
           <h2>Recensioni</h2>
+        </div>
+        <div className="col-12">
+          <h4>Inserisci recensione</h4>
+          <form onSubmit={fetchStoreReviews}>
+            <div className="row align-items-end">
+              <div className="col-3">
+                <label htmlFor="name" className="form-label">
+                  Nome
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  className="form-control"
+                  id="name"
+                  value={formValue.name}
+                  onChange={handleFormValue}
+                />
+              </div>
+              <div className="col-3">
+                <label htmlFor="vote" className="form-label">
+                  Voto
+                </label>
+                <input
+                  type="text"
+                  name="vote"
+                  className="form-control"
+                  id="vote"
+                  value={formValue.vote}
+                  onChange={handleFormValue}
+                />
+              </div>
+              <div className="col-4">
+                <label htmlFor="text" className="form-label">
+                  Testo
+                </label>
+                <input
+                  type="text"
+                  name="text"
+                  className="form-control"
+                  id="text"
+                  value={formValue.text}
+                  onChange={handleFormValue}
+                />
+              </div>
+              <div className="col-2">
+                <button className="btn btn-primary">Invia</button>
+              </div>
+            </div>
+          </form>
         </div>
         {movie.reviews ? (
           movie.reviews.map((review) => {
             return (
-              <div className="col-8 mt-3">
-                <div>
-                  <b>{review.name}</b>
-                  <span> Voto: {review.vote}</span>
+              <>
+                <div className="col-8 mt-3">
+                  <div>
+                    <b>{review.name}</b>
+                    <span> Voto: {review.vote}</span>
+                  </div>
+                  <span>{review.text}</span>
                 </div>
-                <span>{review.text}</span>
-              </div>
+              </>
             );
           })
         ) : (
